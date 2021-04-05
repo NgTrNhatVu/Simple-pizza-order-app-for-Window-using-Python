@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import Algorithms
 from helper import Helper
 from Order import Order
+from info_form import Info_form
 
 #https://www.pizzaexpress.vn/
 #List toàn cục chứa các variable cho radio buttons
