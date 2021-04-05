@@ -5,7 +5,6 @@ from PIL import Image, ImageTk
 import Algorithms
 from helper import Helper
 from Order import Order
-from info_form import Info_form
 
 #https://www.pizzaexpress.vn/
 #List toàn cục chứa các variable cho radio buttons
@@ -18,11 +17,11 @@ class App:
         self.window.geometry("800x500")
         
         #Khai báo các Frame
-        self.info_frame = ''
+        self.cart_frame = ''
         
         #Tạo Canvas
-        self.main_canvas = Canvas(self.window)
-        self.main_canvas.pack(side =LEFT, fill = BOTH, expand=1)
+        self.main_canvas = Canvas(self.window, bg="#ca3435")
+        self.main_canvas.pack(side=LEFT, fill = BOTH, expand=2)
         
         #scrollbar
         self.my_scrollbar = Scrollbar(self.window, orient=VERTICAL, command=self.main_canvas.yview)
@@ -38,15 +37,15 @@ class App:
         self.main_frame = Frame(self.main_canvas)
         self.main_frame.pack(side = BOTTOM)
         
-        self.main_canvas.create_window((0, 0), window=self.main_frame, anchor="nw")
+        self.main_canvas.create_window(1, 0, window=self.main_frame, anchor="n")
         
-        self.info_frame = Frame(self.main_frame)
+        self.cart_frame = Frame(self.main_frame)
                 
         #Banner
         banner_image = Image.open("img/banner.jpg").resize((700, 150), Image.ANTIALIAS)
         test = ImageTk.PhotoImage(banner_image)
 
-        banner = Label(self.main_frame, image=test)
+        banner = Label(self.main_frame, image=test, justify='right')
         banner.pack(side=TOP, fill=X)
         banner.image = test
         
@@ -133,13 +132,20 @@ class App:
             size,
             product.get_status()
         )
-        #Lấy và hiển thị frame mới được tạo trong hàm Order.pro_detail()
+        #Frame Giỏ hàng
+        self.cart_frame.pack(side=TOP)
         
-        pro_frame = order.cart(self.window, self.info_frame)
+        #Tạo frame chứa thông tin sản phẩm
+        pro_frame = order.cart(self.window, self.cart_frame)
         pro_frame.pack()
-        self.info_frame.pack(side=TOP)
+        
+                #Frame lấy thông tin khách hàng
+        self.info_form_frame = order.create_form(self.cart_frame)
+        self.info_form_frame.pack(side = TOP)
+        
+        #Nút tiếp tục mua sắm
         back_to_menu_btn = Button(
-            self.main_frame, text="Mua thêm sản phẩm",
+            self.cart_frame, text="Mua thêm sản phẩm",
             command=lambda: self.back_to_menu(back_to_menu_btn)
             )
         back_to_menu_btn.pack(side=BOTTOM, padx=5, pady=5)
@@ -147,7 +153,8 @@ class App:
         back_to_menu_btn.bind("<Leave>", self.on_leave)
         
     def back_to_menu(self, back_btn):
-        self.info_frame.forget()
+        self.cart_frame.forget()
+        self.info_form_frame.destroy()
         back_btn.forget()
         self.menu_frame.pack()
 
