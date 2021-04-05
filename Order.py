@@ -29,20 +29,20 @@ class Order:
               text="Kích cỡ:",
               font=('default', 10, "bold"),
               width = 20,
-              justify="left").grid(
-                  row=2, column=0, padx=10, pady=5)
+              anchor='c').grid(
+                  row=2, column=0, pady=5)
         size = StringVar(value= self.pro_size)
         size_opt = OptionMenu(self.order_frame, size, "s", "m", "l")
-        size_opt.grid(row=2, column=1)
+        size_opt.grid(row=2, column=1, padx=2, ipadx=2, ipady=2)
         
         Label(self.order_frame,
               text="Số lượng:",
               font=('default', 10, "bold"),
               justify="left").grid(
-                  row=3, column=0)
+                  row=2, column=2)
         quantity = Entry(self.order_frame, width=5)
         quantity.insert(0, '1')
-        quantity.grid(row=3, column=1)
+        quantity.grid(row=2, column=3)
         if self.isNumber(quantity.get()) == False:
             quantity.insert(0, "Vui lòng chọn số lượng")
         
@@ -63,31 +63,32 @@ class Order:
         Label(self.frame,
             text="Tên khách hàng:",
             font=('default', 10, "bold"),
+            anchor='w',
             justify="left",
             width=15).grid(
                 row=1, column=0)
         customer_name = Entry(self.frame, width=40)
-        customer_name.grid(row=1, column=1, padx=10, pady=5)
+        customer_name.grid(row=1, column=1, pady=5, columnspan=3)
 
         Label(self.frame,
             text="Số điện thoại:",
             font=('default', 10, "bold"),
-            justify="left",
+            anchor='w',
             width=15).grid(
                 row=2, column=0)
         customer_phone = Entry(self.frame, width=40)
-        customer_phone.grid(row=2, column=1, padx=10, pady=5)
+        customer_phone.grid(row=2, column=1, padx=5, pady=5, columnspan=3)
         if self.isNumber(customer_phone.get()) == False:
             customer_phone.insert(0, "Vui lòng nhập số điện thoại hợp lệ")
 
         Label(self.frame,
             text="Địa chỉ:",
             font=('default', 10, "bold"),
-            justify="left",
+            anchor='w',
             width=15).grid(
                 row=3, column=0)
         customer_address = Entry(self.frame, width=40)
-        customer_address.grid(row=3, column=1, padx=10, pady=5)  
+        customer_address.grid(row=3, column=1, padx=5, pady=5, ipady=30, columnspan=3)  
           
         return self.frame
     def isNumber(self, input):

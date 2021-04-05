@@ -33,7 +33,6 @@ class App:
         
         self.create_menu_frame()
     
-    
         
     def create_menu_frame(self):
         #Hiện thị canvas 1
@@ -136,12 +135,17 @@ class App:
         
         #Nút tiếp tục mua sắm
         back_to_menu_btn = Button(
-            self.cart_frame, text="Mua thêm sản phẩm",
+            self.cart_frame, text="Chọn thêm sản phẩm",
             command=lambda: self.back_to_menu(back_to_menu_btn)
             )
         back_to_menu_btn.pack(side=BOTTOM, padx=5, pady=5)
         back_to_menu_btn.bind("<Enter>", self.on_enter)
         back_to_menu_btn.bind("<Leave>", self.on_leave)
+        
+        buy_btn = Button(
+            self.cart_frame, text="Mua ngay",
+            command=lambda: self.buy()
+        )
         
     def back_to_menu(self, back_btn):
         self.canvas2.forget_all()

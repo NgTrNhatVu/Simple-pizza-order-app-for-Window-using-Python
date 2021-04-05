@@ -20,15 +20,15 @@ class A_Canvas:
         
         #Tạo frame khác bên trong canvas
         self.main_frame = Frame(self.main_canvas)
-        self.main_frame.pack(side = BOTTOM)
+        self.main_frame.grid(row=0, column=0, sticky="")
         
-        self.main_canvas.create_window(1, 0, window=self.main_frame, anchor="n")
+        self.main_canvas.create_window(0, 0, window=self.main_frame, anchor="nw")
                 
         #Banner
         banner_image = Image.open("img/banner.jpg").resize((700, 150), Image.ANTIALIAS)
         test = ImageTk.PhotoImage(banner_image)
 
-        banner = Label(self.main_frame, image=test, justify='right')
+        banner = Label(self.main_frame, image=test)
         banner.pack(side=TOP, fill=X)
         banner.image = test
         
