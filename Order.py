@@ -57,7 +57,7 @@ class Order:
               text="Thông tin giao hàng",
               font=("default", 12, "bold"),
               anchor="w",
-              width=50,).grid(
+              width=50,).grid( 
                   row=0, columnspan=2, pady=5)
         
         Label(self.frame,

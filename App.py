@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import Algorithms
 from helper import Helper
 from Order import Order
+from A_Canvas import A_Canvas
 
 #https://www.pizzaexpress.vn/
 #List toàn cục chứa các variable cho radio buttons
@@ -16,45 +17,32 @@ class App:
         self.window.title("Dumb Pizza")
         self.window.geometry("800x500")
         
+        self.pizza_list = pizza_list
+        
+        #Khai báo các Canvas
+        self.canvas1 = A_Canvas(self.window)
+        self.canvas2 = A_Canvas(self.window)
+        
+        #Tạm thòi ẩn các canvas
+        self.canvas1.forget_all()
+        self.canvas2.forget_all()
+        
         #Khai báo các Frame
-        self.cart_frame = ''
+        self.menu_frame = Frame(self.canvas1.main_frame)
+        self.cart_frame = Frame(self.canvas2.main_frame)
         
-        #Tạo Canvas
-        self.main_canvas = Canvas(self.window, bg="#ca3435")
-        self.main_canvas.pack(side=LEFT, fill = BOTH, expand=2)
+        self.create_menu_frame()
+    
+    
         
-        #scrollbar
-        self.my_scrollbar = Scrollbar(self.window, orient=VERTICAL, command=self.main_canvas.yview)
-        self.my_scrollbar.pack(side=RIGHT, fill=Y)
-        
-        #Configure main_canvas cho scrollbar
-        self.main_canvas.configure(yscrollcommand=self.my_scrollbar.set)
-        self.main_canvas.bind('<Configure>', lambda e: self.main_canvas.configure(
-            scrollregion = self.main_canvas.bbox("all"))
-            )
-        
-        #Tạo frame khác bên trong canvas
-        self.main_frame = Frame(self.main_canvas)
-        self.main_frame.pack(side = BOTTOM)
-        
-        self.main_canvas.create_window(1, 0, window=self.main_frame, anchor="n")
-        
-        self.cart_frame = Frame(self.main_frame)
-                
-        #Banner
-        banner_image = Image.open("img/banner.jpg").resize((700, 150), Image.ANTIALIAS)
-        test = ImageTk.PhotoImage(banner_image)
-
-        banner = Label(self.main_frame, image=test, justify='right')
-        banner.pack(side=TOP, fill=X)
-        banner.image = test
-        
+    def create_menu_frame(self):
+        #Hiện thị canvas 1
+        self.canvas1.repack()
         #MENU FRAME
-        self.menu_frame = Frame(self.main_frame)
         self.menu_frame.pack(side=BOTTOM)
         
         #Tạo và thêm variables cho radio buttons vào list toàn cục đã tạo
-        for i in range (len(pizza_list)):
+        for i in range (len(self.pizza_list)):
             var = StringVar()
             #Phải có hàm set() để không bị lỗi
             #Không chọn gì thì sẽ hiển thị text này ở thông tin đơn hàng
@@ -75,7 +63,7 @@ class App:
         #Tạo từng hàng chứa thông tin từng sản phẩm
         r = 3
         index = 0
-        for pizza in pizza_list:
+        for pizza in self.pizza_list:
             self.create_pro_row(
                 pizza,
                 radio_var[index],
@@ -87,7 +75,7 @@ class App:
             )
             r += 1
             index += 1
-            
+        
     # function tao mot hang thong tin san pham
     def create_pro_row(self, a_pizza,radio_var, name, price_s, price_m, price_l, r):
         
@@ -105,7 +93,7 @@ class App:
         
         buy_btn = Button(
             self.menu_frame, text="Mua ngay",
-            command=lambda: self.show_details(a_pizza, radio_var.get())
+            command=lambda: self.create_cart_frame(a_pizza, radio_var.get())
             )
         buy_btn.grid(row=r, column=4)
         #Hiệu ứng đổi màu khi hover
@@ -121,9 +109,13 @@ class App:
         e.widget['background'] = 'SystemButtonFace'
         e.widget['foreground'] = 'black'
     
-    def show_details(self, product, size):
-        # Hủy frame chứa menu
-        self.menu_frame.forget()
+    def create_cart_frame(self, product, size):
+        # Hủy canvas 1 chứa menu
+        self.canvas1.forget_all()
+        #Hiển thị canvas 2
+        self.canvas2.repack()
+        #Hiển thị frame Giỏ hàng
+        self.cart_frame.pack(side=BOTTOM)
         order = Order(
             self.window,
             product.get_pro_id(),
@@ -132,14 +124,13 @@ class App:
             size,
             product.get_status()
         )
-        #Frame Giỏ hàng
-        self.cart_frame.pack(side=TOP)
+
         
         #Tạo frame chứa thông tin sản phẩm
         pro_frame = order.cart(self.window, self.cart_frame)
         pro_frame.pack()
         
-                #Frame lấy thông tin khách hàng
+        #Frame lấy thông tin khách hàng
         self.info_form_frame = order.create_form(self.cart_frame)
         self.info_form_frame.pack(side = TOP)
         
@@ -153,11 +144,10 @@ class App:
         back_to_menu_btn.bind("<Leave>", self.on_leave)
         
     def back_to_menu(self, back_btn):
-        self.cart_frame.forget()
+        self.canvas2.forget_all()
         self.info_form_frame.destroy()
-        back_btn.forget()
-        self.menu_frame.pack()
-
+        back_btn.destroy()
+        self.create_menu_frame()
     
 # def main():
 #     #DRIVER CODE HERE!!!!
