@@ -45,5 +45,5 @@ class Product:
 
     def get_info(self):
         print(f"%-10s    %10s    %9s %9s %9s %20s    %1s" % (self.name, self.pro_type,
-              self.s, self.m. self.l, self.date_import, self.status), end='')
+              self.s, self.m. self.l, self.date_import, self.status))
         return ''

@@ -10,14 +10,14 @@ class ClientInfo:
         # Lấy thông tin giao hàng
         Label(self.frame,
               text="Thông tin giao hàng",
-              font=("default", 12, "bold"),
+              font=("default", 10, "bold"),
               anchor="w",
               width=50,).grid(
-                  row=0, columnspan=2, pady=5)
+                  row=0, columnspan=3, pady=5)
 
         Label(self.frame,
               text="Tên khách hàng:",
-              font=('default', 10, "bold"),
+              font=('default', 8, "bold"),
               anchor='w',
               justify="left",
               width=15).grid(
@@ -27,7 +27,7 @@ class ClientInfo:
 
         Label(self.frame,
               text="Số điện thoại:",
-              font=('default', 10, "bold"),
+              font=('default', 8, "bold"),
               anchor='w',
               width=15).grid(
             row=2, column=0)
@@ -38,7 +38,7 @@ class ClientInfo:
 
         Label(self.frame,
               text="Địa chỉ:",
-              font=('default', 10, "bold"),
+              font=('default', 8, "bold"),
               anchor='w',
               width=15).grid(
             row=3, column=0)

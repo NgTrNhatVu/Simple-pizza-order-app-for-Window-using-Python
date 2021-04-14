@@ -2,12 +2,12 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 
-class A_Canvas:
+class ACanvas:
     def __init__(self, window):
-        # Tạo Canvas
+        # Creating a canvas
         self.main_canvas = ''
         self.main_canvas = Canvas(window, bg='#ca3435')
-        self.main_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.main_canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
         # scrollbar
         self.my_scrollbar = Scrollbar(
@@ -20,7 +20,8 @@ class A_Canvas:
             scrollregion=self.main_canvas.bbox("all"))
         )
 
-        # Tạo frame khác bên trong canvas
+        # Making a frame inside the new canvas 
+        # (idk why we have to do this, but it makes the scrollbar works so~)
         self.main_frame = Frame(self.main_canvas)
         self.main_frame.grid(row=0, column=0, sticky="")
 
@@ -29,11 +30,11 @@ class A_Canvas:
 
         # Banner
         banner_image = Image.open(
-            "img/banner.jpg").resize((700, 150), Image.ANTIALIAS)
+            "./img/banner.jpg").resize((700, 150), Image.ANTIALIAS)
         test = ImageTk.PhotoImage(banner_image)
 
         banner = Label(self.main_frame, image=test)
-        banner.pack(side=TOP, fill=X)
+        banner.pack(side=TOP, fill=BOTH, expand=True, anchor=CENTER)
         banner.image = test
 
     def forget_all(self):
