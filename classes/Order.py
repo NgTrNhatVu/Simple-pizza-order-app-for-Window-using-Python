@@ -4,6 +4,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 from Helper import Helper
+import tkinter.messagebox
 
 
 class Order:
@@ -73,9 +74,9 @@ class Order:
                 row = index*2, columnspan = 3, pady = 3)
 
             # ======== SIZE
-            Label(self.__order_frame, 
-                  text = "Kích cỡ:", 
-                  font = ('default', 8, "bold"), 
+            Label(self.__order_frame,
+                  text = "Kích cỡ:",
+                  font = ('default', 8, "bold"),
                   width = 20).grid(
                 row = index*2+1, column = 0)
             size = StringVar(value = self.__pro_list["pro_size"][index])
@@ -93,10 +94,7 @@ class Order:
             quantity.insert(0, self.__pro_list["pro_quantity"][index])
             quantity.grid(row = index*2+1, column = 3)
             #If user changes the quantity, callback __update_quantity
-            if self.is_number(quantity.get()) == True:
-                self.__quantity_string_var_list[index].trace("w", lambda name, index, mode, sv = self.__quantity_string_var_list[index]: self.__update_quantity(sv))
-            else:
-                quantity.insert(0, "Vui lòng chọn số lượng")
+            self.__quantity_string_var_list[index].trace("w", lambda name, index, mode, sv = self.__quantity_string_var_list[index]: self.__update_quantity(sv))
 
             # ===== PRICE PER PRODUCT'S SECTION
             #product_price = unit price * quantity
@@ -141,6 +139,7 @@ class Order:
         return size_price
 
     def __update_size(self, index, selection):
+        
         try:
             self.__pro_list["pro_size"][int(index)] = selection
             #Call update price function
@@ -150,11 +149,16 @@ class Order:
 
     def __update_quantity(self, sv):
         try:
-            self.__pro_list["pro_quantity"][self.__quantity_string_var_list.index(sv)] = sv.get()
+            if sv.get() == '':
+                self.__pro_list["pro_quantity"][self.__quantity_string_var_list.index(sv)] = 0
+            else:
+                self.__pro_list["pro_quantity"][self.__quantity_string_var_list.index(sv)] = int(sv.get())
             #Call update price function
-            self.__update_price(self.__quantity_string_var_list.index(sv))
         except:
-            print("So luong khong hop le")
+            tkinter.messagebox.showwarning("Dumb Pizza", "Số lượng sản phẩm không hợp lệ")
+            sv.set(0)
+            self.__pro_list["pro_quantity"][self.__quantity_string_var_list.index(sv)] = 0
+        self.__update_price(self.__quantity_string_var_list.index(sv))
 
     def __update_price(self, index):
         try:
@@ -173,10 +177,3 @@ class Order:
             self.total_price_label.configure(text=f"Thành tiền: {'{:,}'.format(total_price).replace(',', '.')} VNĐ")
         except:
             print("Could not calculate money")
-            
-    def is_number(self, input):
-        try:
-            int(input)
-            return True
-        except:
-            return False

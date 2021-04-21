@@ -29,23 +29,26 @@ class Bill:
             row=0, column=0, columnspan=4, pady=3)
         
         #Display product infomation:
-        for pro_index in range (1, len(self.__pro_list["pro_id"])):
-            #Product name
-            name_label = Label(self.__main_frame,
-                               text=self.__pro_list['pro_name'][pro_index],
-                               font=('default', 10, 'bold'))
-            name_label.grid(row = pro_index, column=0, pady=3)
-            #Product's size
-            size_label = Label(self.__main_frame, text=f"Size: {self.__pro_list['pro_size'][pro_index]}")
-            size_label.grid(row=pro_index, column=1, pady=3)
-             #Product's quantity
-            quantity_label = Label(self.__main_frame, text=f"SL: {self.__pro_list['pro_quantity'][pro_index]}")
-            quantity_label.grid(row=pro_index, column=2, pady=3)
-            #Product's price
-            size_label = Label(self.__main_frame, 
-                               text=f"{'{:,}'.format(self.__total_price_list[pro_index]).replace(',', '.')} VNĐ",
-                               fg = "#1B8366")
-            size_label.grid(row=pro_index, column=3, pady=3)
+        for pro_index in range (0, len(self.__pro_list["pro_id"])):
+            if int(self.__pro_list['pro_quantity'][pro_index]) > 0:
+                #Product name
+                name_label = Label(self.__main_frame,
+                                text=self.__pro_list['pro_name'][pro_index],
+                                font=('default', 10, 'bold'),
+                                anchor="w", width = 40)
+                name_label.grid(row = pro_index+1, column=0, padx=3, pady=3)
+                #Product's size
+                size_label = Label(self.__main_frame, text=f"Size: {self.__pro_list['pro_size'][pro_index].upper()}")
+                size_label.grid(row=pro_index+1, column=1, padx=3, pady=3)
+                #Product's quantity
+                quantity_label = Label(self.__main_frame, text=f"SL: {self.__pro_list['pro_quantity'][pro_index]}")
+                quantity_label.grid(row=pro_index+1, column=2, padx=3, pady=3)
+                #Product's price
+                size_label = Label(self.__main_frame, 
+                                text=f"{'{:,}'.format(self.__total_price_list[pro_index]).replace(',', '.')} VNĐ",
+                                fg = "#1B8366")
+                size_label.grid(row=pro_index+1, column=3, padx=3, pady=3)
+        pro_index += 1
         
         #Total price
         total_price = 0
