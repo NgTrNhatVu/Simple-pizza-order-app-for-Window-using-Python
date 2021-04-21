@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import Algorithms
 from ACanvas import ACanvas
 from ClientInfo import ClientInfo
+from Bill import *
 from Helper import Helper
 from Order import Order
 
@@ -25,13 +26,13 @@ class App:
         self.pizza_list = pizza_list
 
         # Initializing and temporary hidding all canvas
-        self.canvas1 = ACanvas(self.window)
-        self.canvas1.repack()
+        self.__main_canvas = ACanvas(self.window)
+        self.__main_canvas.repack()
 
         # Initializing frames inside their canvases
-        self.menu_frame = Frame(self.canvas1.main_frame)
-        self.cart_frame = Frame(self.canvas1.main_frame)
-
+        self.menu_frame = Frame(self.__main_canvas.main_frame)
+        self.cart_frame = Frame(self.__main_canvas.main_frame)
+        self.bill_frame = Frame(self.__main_canvas.main_frame)
         self.create_menu_frame()
 
         self.buying_list = {
@@ -40,8 +41,9 @@ class App:
             "size": []
         }
         # Creating order object which holds all products in cart
-        self.order = Order()
+        self.__order = Order()
 
+################################ MENU START HERE   #############################
     def create_menu_frame(self):
         # Displaying canvas 1, which has the menu in it
         # Displaying menu frame
@@ -71,7 +73,7 @@ class App:
         r = 3
         index = 0
         for pizza in self.pizza_list:
-            self.create_pro_row(
+            self.__create_pro_row(
                 pizza,
                 radio_var[index],
                 pizza.get_name(),
@@ -82,9 +84,9 @@ class App:
             )
             r += 1
             index += 1
-
+            
     # This function create a row hold ONE product's information in the menu
-    def create_pro_row(self, a_pizza, radio_var, name, price_s, price_m, price_l, r):
+    def __create_pro_row(self, a_pizza, radio_var, name, price_s, price_m, price_l, r):
 
         Label(self.menu_frame, text=name).grid(row=r, column=0, pady=5)
 
@@ -106,18 +108,14 @@ class App:
         )
         buy_btn.grid(row=r, column=4)
         # Changing color on hover affect
-        buy_btn.bind("<Enter>", self.on_enter)
-        buy_btn.bind("<Leave>", self.on_leave)
+        buy_btn.bind("<Enter>", self.__on_enter)
+        buy_btn.bind("<Leave>", self.__on_leave)
         return a, b, c
 
-    def on_enter(self, e):
-        e.widget['background'] = '#ca3435'
-        e.widget['foreground'] = 'white'
+################################ MENU END HERE   #############################
 
-    def on_leave(self, e):
-        e.widget['background'] = 'SystemButtonFace'
-        e.widget['foreground'] = 'black'
 
+################################ CART START HERE   #############################
     def create_cart_frame(self, product, size):
         # Hidding canvas 1, which displays menu
         self.menu_frame.forget()
@@ -130,54 +128,84 @@ class App:
         self.cart_frame.pack(side=BOTTOM, fill=BOTH,
                              expand=True, anchor=CENTER)
 
-        self.order.add_product(product.get_pro_id(), size)
+        self.__order.add_product(product.get_pro_id(), size)
 
         # Creating a frame hold ONE product's information
-        self.products_frame = self.order.pro_info(self.cart_frame)
-        self.products_frame.pack(side=TOP)
+        self.__products_in_cart_frame = self.__order.pro_info(self.cart_frame)
+        self.__products_in_cart_frame.pack(side=TOP)
 
         # Initializing and displaying the frame that gets customer's information
-        self.info_form_frame = ClientInfo().create_form(self.cart_frame)
-        self.info_form_frame.pack()
+        self.__info_form = ClientInfo()
+        self.__info_form_frame = self.__info_form.create_form(self.cart_frame)
+        self.__info_form_frame.pack()
 
-        btn_frame = Frame(self.cart_frame)
-
-        btn_frame.pack(side=BOTTOM, padx=5, pady=5)
+        #Frame for three buttons
+        self.__button_frame = Frame(self.cart_frame)
+        self.__button_frame.pack(side=BOTTOM, padx=5, pady=5)
+        
         # "Buy more product" button
         back_to_menu_btn = Button(
-            btn_frame, text="Chọn thêm sản phẩm", width=20,
-            command=lambda: self.back_to_menu(btn_frame)
+            self.__button_frame, text="Chọn thêm sản phẩm", width=20,
+            command=lambda: self.__back_to_menu()
         )
         back_to_menu_btn.grid(row=0, column=0, padx=3)
-        back_to_menu_btn.bind("<Enter>", self.on_enter)
-        back_to_menu_btn.bind("<Leave>", self.on_leave)
+        back_to_menu_btn.bind("<Enter>", self.__on_enter)
+        back_to_menu_btn.bind("<Leave>", self.__on_leave)
         # Update cart button
         update_btn = Button(
-            btn_frame, text="Tải lại giỏ hàng", width=20,
-            command=lambda: self.reload_cart()
+            self.__button_frame, text="Không cần tải lại", width=20
         )
         update_btn.grid(row=0, column=1, padx=3)
-        update_btn.bind("<Enter>", self.on_enter)
-        update_btn.bind("<Leave>", self.on_leave)
+        update_btn.bind("<Enter>", self.__on_enter)
+        update_btn.bind("<Leave>", self.__on_leave)
         # Buy button
         buy_btn = Button(
-            btn_frame, text="Mua ngay", width=20,
-            command=lambda: self.buy()
+            self.__button_frame, text="Mua ngay", width=20,
+            command=lambda: self.__create_bill_frame()
         )
         buy_btn.grid(row=0, column=2, padx=3)
-        buy_btn.bind("<Enter>", self.on_enter)
-        buy_btn.bind("<Leave>", self.on_leave)
+        buy_btn.bind("<Enter>", self.__on_enter)
+        buy_btn.bind("<Leave>", self.__on_leave)
+        
+################################ CART END HERE   #############################
 
-    def reload_cart(self):
-        self.products_frame.config(self.order.pro_info(self.cart_frame).pack())
 
-    def buy(self):
-        print("Mua hang")
+################################ BILL START HERE   #############################
+    def __create_bill_frame(self):
+        #self.__info_form.buying()
+        
+        #Get customer's info from ClientInfo.py
+        self.__info_form.set_info()
+        
+        #Hide everything in cart frame
+        self.__info_form_frame.destroy()
+        self.__products_in_cart_frame.destroy()
+        self.__button_frame.destroy()
+        self.cart_frame.forget()
+        
+        #Create bill frame
+        self.bill_frame.pack(side=BOTTOM, fill=BOTH,
+                             expand=True)
+        
+        inner_bill = Bill(self.__order.get_pro_list(), self.__info_form.get_info(), self.__order.get_price_list())
+        
+        inner_bill.create_bill(self.bill_frame).pack()
 
-    def back_to_menu(self, btn_frame):
-        self.info_form_frame.destroy()
-        self.products_frame.destroy()
-        btn_frame.destroy()
+################################ BILL END HERE   #############################
+
+
+    def __on_enter(self, e):
+        e.widget['background'] = '#ca3435'
+        e.widget['foreground'] = 'white'
+
+    def __on_leave(self, e):
+        e.widget['background'] = 'SystemButtonFace'
+        e.widget['foreground'] = 'black'
+
+    def __back_to_menu(self):
+        self.__info_form_frame.destroy()
+        self.__products_in_cart_frame.destroy()
+        self.__button_frame.destroy()
         self.cart_frame.forget()
         #Re-create menu frame
         self.create_menu_frame()
