@@ -14,29 +14,30 @@ class ACanvas:
             window, orient=VERTICAL, command=self.main_canvas.yview)
         self.my_scrollbar.pack(side=RIGHT, fill=Y)
 
-        # Configure main_canvas cho scrollbar
+        # Configure main_canvas for scrollbar
         self.main_canvas.configure(yscrollcommand=self.my_scrollbar.set)
         self.main_canvas.bind('<Configure>', lambda e: self.main_canvas.configure(
             scrollregion=self.main_canvas.bbox("all"))
         )
 
         # Making a frame inside the new canvas 
-        # (idk why we have to do this, but it makes the scrollbar works so~)
-        self.main_frame = Frame(self.main_canvas)
-        self.main_frame.grid(row=0, column=0, sticky="")
+        self.main_frame = Frame(self.main_canvas,)
 
         self.main_canvas.create_window(
             0, 0, window=self.main_frame, anchor="nw")
-
+        # self.main_canvas.bind("<Configure>", self.__onCanvasConfigure)
         # Banner
         banner_image = Image.open(
             "./img/banner.jpg").resize((700, 150), Image.ANTIALIAS)
         test = ImageTk.PhotoImage(banner_image)
 
-        banner = Label(self.main_frame, image=test)
-        banner.pack(side=TOP, fill=BOTH, expand=True, anchor=CENTER)
-        banner.image = test
+        self.banner = Label(self.main_frame, image=test)
+        self.banner.pack(side=TOP, fill=BOTH, expand=True, anchor=CENTER)
+        self.banner.image = test
 
+    # def __onCanvasConfigure(self, e):
+    #     self.main_canvas.itemconfig('main_frame', height=self.main_canvas.winfo_height(), width=self.main_canvas.winfo_width())
+    
     def forget_all(self):
         self.main_canvas.forget()
         self.my_scrollbar.forget()

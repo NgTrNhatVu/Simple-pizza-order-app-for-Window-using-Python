@@ -61,7 +61,11 @@ class Order:
         for i in range (len(self.__pro_list["pro_id"])):
             sv = StringVar()
             self.__quantity_string_var_list.append(sv)
-            
+        Label(self.__order_frame, 
+                  text = "Dumb Pizza - Giỏ hàng", 
+                  font = ('default', 14, "bold"), 
+                  fg = '#ca3435').grid(
+                      row = 0, columnspan = 3, pady = 3)
         #  Displaying ONE row of the product's buying information
         for index in range(len(self.__pro_list["pro_id"])):
             # ======== NAME
@@ -71,32 +75,9 @@ class Order:
                   fg = '#ca3435', 
                   anchor = "w", 
                   width = 50).grid(
-                row = index*2, columnspan = 3, pady = 3)
-
-            # ======== SIZE
-            Label(self.__order_frame,
-                  text = "Kích cỡ:",
-                  font = ('default', 8, "bold"),
-                  width = 20).grid(
-                row = index*2+1, column = 0)
-            size = StringVar(value = self.__pro_list["pro_size"][index])
-            # Choose size, callback __update_size function when user change to other sizes
-            size_opt = OptionMenu(
-                self.__order_frame, size, "s", "m", "l", command = partial(self.__update_size, index))
-            size_opt.grid(row = index*2+1, column = 1, padx = 2, ipadx = 2, ipady = 2)
-
-            # ====== QUANTITY
-            Label(self.__order_frame, 
-                  text = "Số lượng:", 
-                  font = ('default', 8, "bold"), justify = "left").grid(
-                row = index*2+1, column = 2)
-            quantity = Entry(self.__order_frame, width = 5, textvariable = self.__quantity_string_var_list[index])
-            quantity.insert(0, self.__pro_list["pro_quantity"][index])
-            quantity.grid(row = index*2+1, column = 3)
-            #If user changes the quantity, callback __update_quantity
-            self.__quantity_string_var_list[index].trace("w", lambda name, index, mode, sv = self.__quantity_string_var_list[index]: self.__update_quantity(sv))
-
-            # ===== PRICE PER PRODUCT'S SECTION
+                row = index + index + 1, columnspan = 3, pady = 3)
+                  
+             # ===== PRICE PER PRODUCT'S SECTION
             #product_price = unit price * quantity
             product_price = self.__unit_price(
                 self.__pro_list["pro_id"][index], self.__pro_list["pro_size"][index])
@@ -104,11 +85,36 @@ class Order:
             #Displaying and formatting product_price
             price_label = Label(self.__order_frame, 
                   font = ('default', 10, "bold"), 
-                  fg = "#1B8366", 
+                  fg = "#084f09", 
                   text = f"{'{:,}'.format(product_price).replace(',', '.')} VNĐ")
-            price_label.grid(row = index*2, column = 4)
+            price_label.grid(row = index + index + 1, column = 4)
             self.__price_label_list.append(price_label)
             self.__total_price_list.append(product_price)
+            
+            # ======== SIZE
+            Label(self.__order_frame,
+                  text = "Kích cỡ:",
+                  font = ('default', 8, "bold"),
+                  width = 20).grid(
+                row = index + index + 2, column = 0)
+            size = StringVar(value = self.__pro_list["pro_size"][index])
+            # Choose size, callback __update_size function when user change to other sizes
+            size_opt = OptionMenu(
+                self.__order_frame, size, "s", "m", "l", command = partial(self.__update_size, index))
+            size_opt.grid(row = index + index + 2, column = 1, padx = 2, ipadx = 2, ipady = 2)
+
+            # ====== QUANTITY
+            Label(self.__order_frame, 
+                  text = "Số lượng:", 
+                  font = ('default', 8, "bold"), justify = "left").grid(
+                row = index + index + 2, column = 2)
+            quantity = Entry(self.__order_frame, width = 5, textvariable = self.__quantity_string_var_list[index])
+            quantity.insert(0, self.__pro_list["pro_quantity"][index])
+            quantity.grid(row = index + index + 2, column = 3)
+            #If user changes the quantity, callback __update_quantity
+            self.__quantity_string_var_list[index].trace("w", lambda name, index, mode, sv = self.__quantity_string_var_list[index]: self.__update_quantity(sv))
+
+
             
         #Calculate every price in cart
         total_price = 0
@@ -117,11 +123,11 @@ class Order:
         #===== TOTAL PRICE
         self.total_price_label = Label(self.__order_frame, 
                   font = ('default', 12, "bold"), 
-                  fg = "#1B8366",
+                  fg = "#084f09",
                     text=f"Thành tiền: {'{:,}'.format(total_price).replace(',', '.')} VNĐ"
             )
         #Display total price at the end of the cart
-        self.total_price_label.grid(row=len(self.__pro_list["pro_id"])*2, column=0, columnspan=4, pady=5)
+        self.total_price_label.grid(row=len(self.__pro_list["pro_id"])*2 + 1, column=0, columnspan=4, pady=5)
         
         return self.__order_frame
 

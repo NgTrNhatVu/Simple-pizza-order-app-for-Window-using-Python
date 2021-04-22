@@ -46,7 +46,7 @@ class Bill:
                 #Product's price
                 size_label = Label(self.__main_frame, 
                                 text=f"{'{:,}'.format(self.__total_price_list[pro_index]).replace(',', '.')} VNĐ",
-                                fg = "#1B8366")
+                                fg = "#084f09")
                 size_label.grid(row=pro_index+1, column=3, padx=3, pady=3)
         pro_index += 1
         
@@ -58,25 +58,25 @@ class Bill:
         Label(self.__main_frame, 
               text=f"Thành tiền: {'{:,}'.format(total_price).replace(',', '.')} VNĐ",
               font=('default', 10, 'bold'),
-              fg = "#1B8366").grid(
+              fg = "#084f09").grid(
             row=pro_index, column=0, columnspan=4, pady=3)    
         
-        #BILL information
+        #Customer information
         pro_index += 1
         Label(self.__main_frame,
               text="Thông tin giao hàng", font=('default', 12, 'bold'), fg='#ca3435').grid(
             row=pro_index, column=0, columnspan=4, pady=3)
               
         pro_index += 1
-        customer_name_label = Label(self.__main_frame, text=f"Tên khách hàng: {self.__customer_info['name']}")
+        customer_name_label = Label(self.__main_frame, text=f"Tên khách hàng: {self.__customer_info['name']}", wraplength=300)
         customer_name_label.grid(row=pro_index, column=0, columnspan=4, pady=3)
         
         pro_index += 1
-        customer_phone_label = Label(self.__main_frame, text=f"Số điện thoại: {self.__customer_info['phone']}")
+        customer_phone_label = Label(self.__main_frame, text=f"Số điện thoại: {self.__customer_info['phone']}", wraplength=300)
         customer_phone_label.grid(row=pro_index, column=0, columnspan=4, pady=3)
         
         pro_index += 1
-        customer_address_label = Label(self.__main_frame, text=f"Địa chỉ giao hàng: {self.__customer_info['address']}")
+        customer_address_label = Label(self.__main_frame, text=f"Địa chỉ giao hàng: {self.__customer_info['address']}", wraplength=300)
         customer_address_label.grid(row=pro_index, column=0, columnspan=4, pady=3)
         
         return self.__main_frame
